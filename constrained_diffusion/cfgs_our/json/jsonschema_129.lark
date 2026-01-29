@@ -1,0 +1,15 @@
+%llguidance {}
+
+APPLICATIONS: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+APPLICATIONS_KV: "\"applications\"" SPACE ":" SPACE APPLICATIONS
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CHEMICAL_ID_KV: "\"chemicalID\"" SPACE ":" SPACE STRING
+NAME_KV: "\"name\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE CHEMICAL_ID_KV "," SPACE NAME_KV "," SPACE TYPE_KV "," SPACE APPLICATIONS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TYPE_KV: "\"type\"" SPACE ":" SPACE STRING
+FENCE: "```"

@@ -1,0 +1,15 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DESCRIPTION_KV: "\"description\"" SPACE ":" SPACE STRING
+REPORT_ID_KV: "\"reportID\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE REPORT_ID_KV "," SPACE DESCRIPTION_KV "," SPACE SEVERITY_KV "," SPACE STATUS_KV "}" SPACE FENCE?
+SEVERITY: ("\"low\"" | "\"medium\"" | "\"high\"" | "\"critical\"") SPACE
+SEVERITY_KV: "\"severity\"" SPACE ":" SPACE SEVERITY
+SPACE: /[ \t\n\r]/*
+STATUS: ("\"open\"" | "\"in progress\"" | "\"resolved\"" | "\"closed\"") SPACE
+STATUS_KV: "\"status\"" SPACE ":" SPACE STATUS
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

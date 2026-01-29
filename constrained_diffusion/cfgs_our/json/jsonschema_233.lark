@@ -1,0 +1,22 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+ITEMS: "[" SPACE (ITEMS_ITEM ("," SPACE ITEMS_ITEM)*)? "]" SPACE
+ITEMS_ITEM: "{" SPACE ((ITEMS_ITEM_NAME_KV ITEMS_ITEM_NAME_REST | ITEMS_ITEM_PRICE_KV))? "}" SPACE
+ITEMS_ITEM_NAME_KV: "\"name\"" SPACE ":" SPACE STRING
+ITEMS_ITEM_NAME_REST: ("," SPACE ITEMS_ITEM_PRICE_KV)?
+ITEMS_ITEM_PRICE_KV: "\"price\"" SPACE ":" SPACE NUMBER
+ITEMS_KV: "\"items\"" SPACE ":" SPACE ITEMS
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+ORDER_ID_KV: "\"orderId\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE ORDER_ID_KV "," SPACE ITEMS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

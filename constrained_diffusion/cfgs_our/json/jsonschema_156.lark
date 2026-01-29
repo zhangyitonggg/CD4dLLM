@@ -1,0 +1,19 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CROP_TYPE_KV: "\"cropType\"" SPACE ":" SPACE STRING
+DECIMAL_PART: /[0-9]/{1,16}
+HARVESTED_AREA_KV: "\"harvestedArea\"" SPACE ":" SPACE NUMBER
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRODUCTION_DATE_KV: "\"productionDate\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE CROP_TYPE_KV "," SPACE HARVESTED_AREA_KV "," SPACE YIELD_KV "," SPACE PRODUCTION_DATE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+YIELD_KV: "\"yield\"" SPACE ":" SPACE NUMBER
+FENCE: "```"

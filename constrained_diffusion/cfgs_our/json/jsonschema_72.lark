@@ -1,0 +1,18 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COMMENTS_KV: "\"comments\"" SPACE ":" SPACE STRING
+PRODUCT_ID_KV: "\"productId\"" SPACE ":" SPACE STRING
+RATING: /[1-5]/ SPACE
+RATING_KV: "\"rating\"" SPACE ":" SPACE RATING
+REVIEW_ID_KV: "\"reviewId\"" SPACE ":" SPACE STRING
+REVIEWER: "{" SPACE REVIEWER_USER_ID_KV "," SPACE REVIEWER_NAME_KV "}" SPACE
+REVIEWER_KV: "\"reviewer\"" SPACE ":" SPACE REVIEWER
+REVIEWER_NAME_KV: "\"name\"" SPACE ":" SPACE STRING
+REVIEWER_USER_ID_KV: "\"userId\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE REVIEW_ID_KV "," SPACE PRODUCT_ID_KV "," SPACE REVIEWER_KV "," SPACE RATING_KV "," SPACE COMMENTS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

@@ -1,0 +1,21 @@
+%llguidance {}
+
+ALCOHOL_CONTENT_KV: "\"alcoholContent\"" SPACE ":" SPACE NUMBER
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRODUCT_NAME_KV: "\"productName\"" SPACE ":" SPACE STRING
+PRODUCT_TYPE_KV: "\"productType\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE PRODUCT_NAME_KV "," SPACE PRODUCT_TYPE_KV "," SPACE ALCOHOL_CONTENT_KV "," SPACE STOCK_QUANTITY_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STOCK_QUANTITY_KV: "\"stockQuantity\"" SPACE ":" SPACE INTEGER
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

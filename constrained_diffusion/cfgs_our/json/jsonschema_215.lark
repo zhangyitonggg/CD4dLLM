@@ -1,0 +1,17 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CONDITION_NAME_KV: "\"conditionName\"" SPACE ":" SPACE STRING
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DIAGNOSIS_DATE: DATE_STRING
+DIAGNOSIS_DATE_KV: "\"diagnosisDate\"" SPACE ":" SPACE DIAGNOSIS_DATE
+ICD_CODES: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+ICD_CODES_KV: "\"icdCodes\"" SPACE ":" SPACE ICD_CODES
+start: SPACE  "{" SPACE CONDITION_NAME_KV "," SPACE DIAGNOSIS_DATE_KV "," SPACE TREATMENT_KV "," SPACE ICD_CODES_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TREATMENT_KV: "\"treatment\"" SPACE ":" SPACE STRING
+FENCE: "```"

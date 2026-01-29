@@ -1,0 +1,17 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DEFECT_TYPE_KV: "\"defectType\"" SPACE ":" SPACE STRING
+INSPECTION_DATE: DATE_STRING
+INSPECTION_DATE_KV: "\"inspectionDate\"" SPACE ":" SPACE INSPECTION_DATE
+PIPELINE_ID_KV: "\"pipelineID\"" SPACE ":" SPACE STRING
+REPAIR_STATUS: ("\"Not Inspected\"" | "\"Inspected - No Defect\"" | "\"Defect Found - Repair Scheduled\"" | "\"Defect Repaired\"") SPACE
+REPAIR_STATUS_KV: "\"repairStatus\"" SPACE ":" SPACE REPAIR_STATUS
+start: SPACE  "{" SPACE PIPELINE_ID_KV "," SPACE INSPECTION_DATE_KV "," SPACE DEFECT_TYPE_KV "," SPACE REPAIR_STATUS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

@@ -1,0 +1,13 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+MEDICATION_INCLUDED_KV: "\"medicationIncluded\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE SYSTEM_ID_KV "," SPACE SYSTEM_TYPE_KV "," SPACE MEDICATION_INCLUDED_KV "," SPACE USAGE_INSTRUCTIONS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+SYSTEM_ID_KV: "\"systemID\"" SPACE ":" SPACE STRING
+SYSTEM_TYPE_KV: "\"systemType\"" SPACE ":" SPACE STRING
+USAGE_INSTRUCTIONS_KV: "\"usageInstructions\"" SPACE ":" SPACE STRING
+FENCE: "```"

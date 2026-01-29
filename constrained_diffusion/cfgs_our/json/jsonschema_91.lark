@@ -1,0 +1,14 @@
+%llguidance {}
+
+AGE: (/[0]/ | /[1-9]/ /[0-9]/{0,15}) SPACE
+AGE_KV: "\"age\"" SPACE ":" SPACE AGE
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+FIRST_NAME_KV: "\"firstName\"" SPACE ":" SPACE STRING
+LAST_NAME_KV: "\"lastName\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE FIRST_NAME_KV "," SPACE LAST_NAME_KV "," SPACE AGE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

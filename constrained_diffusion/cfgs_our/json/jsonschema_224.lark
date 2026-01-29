@@ -1,0 +1,15 @@
+%llguidance {}
+
+ADDRESS_KV: "\"address\"" SPACE ":" SPACE STRING
+BRANCH_ID_KV: "\"branchID\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+OPENING_HOURS_KV: "\"openingHours\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE BRANCH_ID_KV "," SPACE ADDRESS_KV "," SPACE SERVICES_OFFERED_KV "," SPACE OPENING_HOURS_KV "}" SPACE FENCE?
+SERVICES_OFFERED: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+SERVICES_OFFERED_KV: "\"servicesOffered\"" SPACE ":" SPACE SERVICES_OFFERED
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

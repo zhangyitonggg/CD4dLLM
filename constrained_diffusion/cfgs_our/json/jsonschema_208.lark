@@ -1,0 +1,15 @@
+%llguidance {}
+
+SKU_KV: "\"SKU\"" SPACE ":" SPACE STRING
+AGE_GROUP_KV: "\"ageGroup\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+start: SPACE  "{" SPACE TOY_NAME_KV "," SPACE AGE_GROUP_KV "," SPACE SAFETY_WARNINGS_KV "," SPACE SKU_KV "}" SPACE FENCE?
+SAFETY_WARNINGS: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+SAFETY_WARNINGS_KV: "\"safetyWarnings\"" SPACE ":" SPACE SAFETY_WARNINGS
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TOY_NAME_KV: "\"toyName\"" SPACE ":" SPACE STRING
+FENCE: "```"

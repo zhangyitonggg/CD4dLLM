@@ -1,0 +1,22 @@
+%llguidance {}
+
+AVAILABILITY_STATUS_KV: "\"availabilityStatus\"" SPACE ":" SPACE BOOLEAN
+BOOLEAN: ("true" | "false") SPACE
+CATEGORY_KV: "\"category\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRICE_KV: "\"price\"" SPACE ":" SPACE NUMBER
+PRODUCT_ID_KV: "\"productId\"" SPACE ":" SPACE STRING
+PRODUCT_NAME_KV: "\"productName\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE PRODUCT_ID_KV "," SPACE PRODUCT_NAME_KV "," SPACE PRICE_KV "," SPACE CATEGORY_KV "," SPACE AVAILABILITY_STATUS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

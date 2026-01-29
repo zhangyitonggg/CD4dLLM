@@ -1,0 +1,18 @@
+%llguidance {}
+
+APPLICATION_DATE: DATE_STRING
+APPLICATION_DATE_KV: "\"applicationDate\"" SPACE ":" SPACE APPLICATION_DATE
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CURRENT_STATUS_KV: "\"currentStatus\"" SPACE ":" SPACE STRING
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+INVENTOR_NAMES: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+INVENTOR_NAMES_KV: "\"inventorNames\"" SPACE ":" SPACE INVENTOR_NAMES
+PATENT_ID_KV: "\"patentId\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE PATENT_ID_KV "," SPACE APPLICATION_DATE_KV "," SPACE INVENTOR_NAMES_KV "," SPACE CURRENT_STATUS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

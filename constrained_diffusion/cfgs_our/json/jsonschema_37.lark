@@ -1,0 +1,19 @@
+%llguidance {}
+
+CAMPAIGN_ID_KV: "\"campaignID\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DISCOUNT_DETAILS_KV: "\"discountDetails\"" SPACE ":" SPACE STRING
+END_DATE: DATE_STRING
+END_DATE_KV: "\"endDate\"" SPACE ":" SPACE END_DATE
+PRODUCT_ID_KV: "\"productID\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE CAMPAIGN_ID_KV "," SPACE PRODUCT_ID_KV "," SPACE START_DATE_KV "," SPACE END_DATE_KV ("," SPACE DISCOUNT_DETAILS_KV)? "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+START_DATE: DATE_STRING
+START_DATE_KV: "\"startDate\"" SPACE ":" SPACE START_DATE
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

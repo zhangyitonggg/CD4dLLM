@@ -1,0 +1,13 @@
+%llguidance {}
+
+BOOLEAN: ("true" | "false") SPACE
+FSTYPE: ("\"ext3\"" | "\"ext4\"" | "\"btrfs\"") SPACE
+FSTYPE_KV: "\"fstype\"" SPACE ":" SPACE FSTYPE
+OPTIONS: "\"" /[a-zA-Z0-9,_-]/+ "\"" SPACE
+OPTIONS_KV: "\"options\"" SPACE ":" SPACE OPTIONS
+READONLY_KV: "\"readonly\"" SPACE ":" SPACE BOOLEAN
+start: SPACE  "{" SPACE STORAGE_KV "," SPACE FSTYPE_KV "," SPACE OPTIONS_KV "," SPACE READONLY_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STORAGE: "\"" "/dev" "/" /[^\/]/+ ("/" /[^\/]/+)* "\"" SPACE
+STORAGE_KV: "\"storage\"" SPACE ":" SPACE STORAGE
+FENCE: "```"

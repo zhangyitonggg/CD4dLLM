@@ -1,0 +1,21 @@
+%llguidance {}
+
+SKU_KV: "\"SKU\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRICE_KV: "\"price\"" SPACE ":" SPACE NUMBER
+PRODUCT_NAME_KV: "\"productName\"" SPACE ":" SPACE STRING
+QUANTITY_IN_STOCK_KV: "\"quantityInStock\"" SPACE ":" SPACE INTEGER
+start: SPACE  "{" SPACE PRODUCT_NAME_KV "," SPACE SKU_KV "," SPACE PRICE_KV "," SPACE QUANTITY_IN_STOCK_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

@@ -1,0 +1,23 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DECIMAL_PART: /[0-9]/{1,16}
+FILL_DATE: DATE_STRING
+FILL_DATE_KV: "\"fillDate\"" SPACE ":" SPACE FILL_DATE
+FUEL_TYPE_KV: "\"fuelType\"" SPACE ":" SPACE STRING
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+LOG_ID_KV: "\"logID\"" SPACE ":" SPACE STRING
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+QUANTITY_KV: "\"quantity\"" SPACE ":" SPACE NUMBER
+start: SPACE  "{" SPACE LOG_ID_KV "," SPACE VEHICLE_ID_KV "," SPACE FUEL_TYPE_KV "," SPACE QUANTITY_KV "," SPACE FILL_DATE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+VEHICLE_ID_KV: "\"vehicleID\"" SPACE ":" SPACE STRING
+FENCE: "```"

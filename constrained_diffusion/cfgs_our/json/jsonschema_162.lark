@@ -1,0 +1,18 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COURSE_ID_KV: "\"courseId\"" SPACE ":" SPACE STRING
+COURSE_NAME_KV: "\"courseName\"" SPACE ":" SPACE STRING
+CREDIT_HOURS_KV: "\"creditHours\"" SPACE ":" SPACE INTEGER
+DESCRIPTION_KV: "\"description\"" SPACE ":" SPACE STRING
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+start: SPACE  "{" SPACE COURSE_ID_KV "," SPACE COURSE_NAME_KV "," SPACE DESCRIPTION_KV "," SPACE CREDIT_HOURS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

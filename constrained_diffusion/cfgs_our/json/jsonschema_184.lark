@@ -1,0 +1,24 @@
+%llguidance {}
+
+CAPACITY_KV: "\"capacity\"" SPACE ":" SPACE NUMBER
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+DIMENSIONS: "{" SPACE DIMENSIONS_HEIGHT_KV "," SPACE DIMENSIONS_DIAMETER_KV "}" SPACE
+DIMENSIONS_DIAMETER_KV: "\"diameter\"" SPACE ":" SPACE NUMBER
+DIMENSIONS_HEIGHT_KV: "\"height\"" SPACE ":" SPACE NUMBER
+DIMENSIONS_KV: "\"dimensions\"" SPACE ":" SPACE DIMENSIONS
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+MATERIAL_TYPE: ("\"metal\"" | "\"glass\"" | "\"plastic\"") SPACE
+MATERIAL_TYPE_KV: "\"materialType\"" SPACE ":" SPACE MATERIAL_TYPE
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRODUCT_ID_KV: "\"productId\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE PRODUCT_ID_KV "," SPACE MATERIAL_TYPE_KV "," SPACE DIMENSIONS_KV "," SPACE CAPACITY_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

@@ -1,0 +1,14 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+FACILITY_ID_KV: "\"facilityId\"" SPACE ":" SPACE STRING
+REQUESTED_SERVICES: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+REQUESTED_SERVICES_KV: "\"requestedServices\"" SPACE ":" SPACE REQUESTED_SERVICES
+start: SPACE  "{" SPACE FACILITY_ID_KV "," SPACE REQUESTED_SERVICES_KV "," SPACE URGENCY_LEVEL_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+URGENCY_LEVEL: ("\"low\"" | "\"medium\"" | "\"high\"") SPACE
+URGENCY_LEVEL_KV: "\"urgencyLevel\"" SPACE ":" SPACE URGENCY_LEVEL
+FENCE: "```"

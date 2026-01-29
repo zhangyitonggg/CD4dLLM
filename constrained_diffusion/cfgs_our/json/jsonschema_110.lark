@@ -1,0 +1,18 @@
+%llguidance {}
+
+ARRIVAL_DATE: DATE_STRING
+ARRIVAL_DATE_KV: "\"arrivalDate\"" SPACE ":" SPACE ARRIVAL_DATE
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DEPARTURE_DATE: DATE_STRING
+DEPARTURE_DATE_KV: "\"departureDate\"" SPACE ":" SPACE DEPARTURE_DATE
+DOCK_ID_KV: "\"dockID\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE DOCK_ID_KV "," SPACE VESSEL_NAME_KV "," SPACE ARRIVAL_DATE_KV "," SPACE DEPARTURE_DATE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+VESSEL_NAME_KV: "\"vesselName\"" SPACE ":" SPACE STRING
+FENCE: "```"

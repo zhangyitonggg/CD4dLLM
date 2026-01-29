@@ -1,0 +1,19 @@
+%llguidance {}
+
+AIRLINE_CODE_KV: "\"airlineCode\"" SPACE ":" SPACE STRING
+ALLIANCE_MEMBERSHIP_KV: "\"allianceMembership\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COMPANY_NAME_KV: "\"companyName\"" SPACE ":" SPACE STRING
+FLEET_SIZE_KV: "\"fleetSize\"" SPACE ":" SPACE INTEGER
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+start: SPACE  "{" SPACE AIRLINE_CODE_KV "," SPACE COMPANY_NAME_KV "," SPACE ALLIANCE_MEMBERSHIP_KV "," SPACE FLEET_SIZE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

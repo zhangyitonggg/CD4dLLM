@@ -1,0 +1,16 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+start: SPACE  "{" SPACE VEHICLE_ID_KV "," SPACE SERVICE_DATE_KV "," SPACE SERVICE_TYPE_KV "," SPACE SERVICE_NOTES_KV "}" SPACE FENCE?
+SERVICE_DATE: DATE_STRING
+SERVICE_DATE_KV: "\"serviceDate\"" SPACE ":" SPACE SERVICE_DATE
+SERVICE_NOTES_KV: "\"serviceNotes\"" SPACE ":" SPACE STRING
+SERVICE_TYPE_KV: "\"serviceType\"" SPACE ":" SPACE STRING
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+VEHICLE_ID_KV: "\"vehicleID\"" SPACE ":" SPACE STRING
+FENCE: "```"

@@ -1,0 +1,15 @@
+%llguidance {}
+
+CHEST_KV: "\"chest\"" SPACE ":" SPACE NUMBER
+DECIMAL_PART: /[0-9]/{1,16}
+HIPS_KV: "\"hips\"" SPACE ":" SPACE NUMBER
+INSEAM_KV: "\"inseam\"" SPACE ":" SPACE NUMBER
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+start: SPACE  "{" SPACE CHEST_KV "," SPACE WAIST_KV "," SPACE HIPS_KV "," SPACE INSEAM_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+WAIST_KV: "\"waist\"" SPACE ":" SPACE NUMBER
+FENCE: "```"

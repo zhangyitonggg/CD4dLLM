@@ -1,0 +1,14 @@
+%llguidance {}
+
+CAPITAL_GAINS_KV: "\"capitalGains\"" SPACE ":" SPACE NUMBER
+DECIMAL_PART: /[0-9]/{1,16}
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+INTEREST_INCOME_KV: "\"interestIncome\"" SPACE ":" SPACE NUMBER
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+start: SPACE  "{" SPACE CAPITAL_GAINS_KV "," SPACE INTEREST_INCOME_KV "," SPACE TOTAL_RETURN_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+TOTAL_RETURN_KV: "\"totalReturn\"" SPACE ":" SPACE NUMBER
+FENCE: "```"

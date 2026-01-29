@@ -1,0 +1,19 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CHEMICAL_ID_KV: "\"chemicalID\"" SPACE ":" SPACE STRING
+DECIMAL_PART: /[0-9]/{1,16}
+DISPOSAL_METHOD_KV: "\"disposalMethod\"" SPACE ":" SPACE STRING
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+QUANTITY_KV: "\"quantity\"" SPACE ":" SPACE NUMBER
+REQUEST_ID_KV: "\"requestID\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE REQUEST_ID_KV "," SPACE CHEMICAL_ID_KV "," SPACE QUANTITY_KV "," SPACE DISPOSAL_METHOD_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

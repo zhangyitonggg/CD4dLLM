@@ -1,0 +1,19 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+INSULATION_TYPE_KV: "\"insulationType\"" SPACE ":" SPACE STRING
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+MANUFACTURER_KV: "\"manufacturer\"" SPACE ":" SPACE STRING
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+start: SPACE  "{" SPACE WIRE_LENGTH_KV "," SPACE INSULATION_TYPE_KV "," SPACE VOLTAGE_RATING_KV "," SPACE MANUFACTURER_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+VOLTAGE_RATING_KV: "\"voltageRating\"" SPACE ":" SPACE NUMBER
+WIRE_LENGTH_KV: "\"wireLength\"" SPACE ":" SPACE NUMBER
+FENCE: "```"

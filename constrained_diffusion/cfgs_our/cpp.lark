@@ -1,0 +1,145 @@
+DEC_NUMBER: /0|[1-9]\d*/
+DECIMAL_PART: /\.\d+/
+EXP: /[eE][+-]?\d+/
+FLOAT_NUMBER: /(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?/
+HEX_NUMBER: /0x[\da-fA-F]+/
+OCT_NUMBER: /0o[0-7]+/
+BIN_NUMBER: /0b[0-1]+/
+SPACE: /[ \t\n\r]/
+FENCE: "```"
+
+FOR: "for"
+IF: "if"
+WHILE: "while"
+RETURN: "return"
+ELSE: "else"
+BREAK: "break"
+CONTINUE: "continue"
+INCLUDE: "include"
+USING: "using"
+NAMESPACE: "namespace"
+TYPEDEF: "typedef"
+SWITCH: "switch"
+CASE: "case"
+DEFAULT: "default"
+CONST: "const"
+
+BINOP_WORD: /(and|or|xor)/
+UNOP_WORD: /not/
+
+IDENTIFIER: /[a-zA-Z_][a-zA-Z0-9_]*/
+HASH: "#"
+LBRACE: "{"
+RBRACE: "}"
+LBRACK: "["
+RBRACK: "]"
+LPAREN: "("
+RPAREN: ")"
+COMMA: ","
+EQUAL: "="
+SEMICOLON: ";"
+COLON: ":"
+LESS: "<"
+GREATER: ">"
+MINUS: "-"
+NOT: "!"
+DOT: "."
+PLUS: "+"
+AMP: "&"
+STAR: "*"
+SLASH: "/"
+QUESTION: "?"
+BAR: "|"
+
+STRING: /"([^"\n\\]|\\.)*"/
+CHAR: /'([^'\\]|\\[\\'tnvfrba])'/
+BINOP: /\+|-|\*|\/|%|<|>|&|\||=|\^/
+COMMENT_SINGLE_LINE: /\/\/[^\n]*/
+COMMENT_MULTI_LINE: /\/\*([^*]|\*+[^\/])*\*\//
+
+H: /h|hpp/
+LONG: /long|short|signed|unsigned/
+
+%import common.WS
+%ignore WS
+%ignore COMMENT_SINGLE_LINE
+%ignore COMMENT_MULTI_LINE
+
+start: SPACE* includes program FENCE?
+start_one_fun: includes comments function_def
+start_two_fun: includes comments function_def function_def
+
+comments: comment*
+program: tld+
+tld: comment | function_def
+
+includes: include*
+include: HASH INCLUDE "<" name ">" | "#" INCLUDE  "<" include_path "." H ">" | USING NAMESPACE name ";" | comment | TYPEDEF type name ";"
+include_path: name ("/" include_path)?
+
+head: type name "(" opt_params ")" 
+opt_params: params?
+params: param ("," param)*
+param: type name
+type: name | "long" name | "const" type | type "<" type_list ">" | type ": :" type  | type "*" | type "&"
+type_list: type ("," type)*
+function_def: head grouped_statement
+body: body_content*
+body_content: statement | COMMENT_SINGLE_LINE
+comment: COMMENT_SINGLE_LINE | COMMENT_MULTI_LINE
+
+variable_def: type init_list ";"
+init_list: init_elem ("," init_elem)*
+init_elem: name | name "=" expression | name "(" opt_args ")" | name "[" expression "]" | name "[" expression "]" "=" expression
+statement: variable_def | expression_stmt | if_statement | for_statement | while_statement | return_statement | continue_statement | break_statement | switch_statement
+expression_stmt: expression ";"
+statement_or_grouped_statement: statement | grouped_statement
+opt_expression: expression?
+grouped_statement: "{" body "}"
+continue_statement: CONTINUE ";"
+break_statement: BREAK ";"
+return_statement: RETURN expression ";" | RETURN ";"
+if_statement: IF "(" expression ")" statement_or_grouped_statement else_part
+else_part: (ELSE statement_or_grouped_statement)?
+for_statement: FOR "(" opt_expression ";" opt_expression ";" opt_expression ")" statement_or_grouped_statement
+            | FOR "(" variable_def opt_expression ";" opt_expression ")" statement_or_grouped_statement
+            | FOR "(" type init_elem ":" expression ")" statement_or_grouped_statement
+while_statement: WHILE "(" expression ")" statement_or_grouped_statement
+switch_statement: SWITCH "(" expression ")" "{" case_list opt_default "}"
+case_list: case+
+case: CASE expression ":" body 
+opt_default: (DEFAULT ":" body)?
+
+expression: name | literal | function_call | member_access | binop | array_access | grouped_expression | unop | type_cast | pointer_member_access | ternary_expression | lambda_expression
+unop: "-" expression | "!" expression | "--" expression | "++" expression | expression "++" | expression "--" | UNOP_WORD expression | "*" expression | "&" expression
+member_access: expression "." name 
+pointer_member_access: expression "->" name
+function_call: expression "(" opt_args ")" | expression "<" type_list ">" "(" opt_args ")"
+type_cast: "(" type ")" expression
+grouped_expression: "(" expression ")"
+array_access: expression "[" expression "]"
+opt_args: args?
+args: expression ("," args)*
+binop: expression BINOP expression | expression BINOP_WORD expression | expression "!=" expression | expression BINOP "=" expression | expression ">>" expression | expression "<<" expression | expression ">>=" expression | expression "<<=" expression | expression "&&" expression | expression "||" expression
+ternary_expression: expression "?" expression ":" expression
+lambda_expression: "[" opt_capture_list "]" "(" opt_params ")" "{" body "}" | "[" opt_capture_list "]" "{" body "}"
+opt_capture_list: full_capture_list?
+full_capture_list: "&" "," opt_copy_capture_list | "=" "," opt_ref_capture_list | capture_list
+opt_copy_capture_list: copy_capture_list?
+copy_capture_list: copy_capture ("," copy_capture_list)*
+opt_ref_capture_list: ref_capture_list?
+ref_capture_list: ref_capture ("," ref_capture_list)*
+capture_list: capture ("," capture_list)*
+capture: ref_capture | copy_capture
+copy_capture: name
+ref_capture: "&" name
+
+literal: string_literal | char_literal | number | vector_literal
+number: FLOAT_NUMBER | DEC_NUMBER | HEX_NUMBER | OCT_NUMBER | BIN_NUMBER
+string_literal: STRING
+char_literal: CHAR
+vector_literal: "{" opt_expression_list "}"
+opt_expression_list: expression_list?
+expression_list: expression ("," expression_list)*
+
+name: IDENTIFIER | IDENTIFIER "::" name | "::" name

@@ -1,0 +1,24 @@
+%llguidance {}
+
+BATCH_ID_KV: "\"batchID\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DECIMAL_PART: /[0-9]/{1,16}
+DEFECTS: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+DEFECTS_KV: "\"defects\"" SPACE ":" SPACE DEFECTS
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+PRODUCTION_DATE: DATE_STRING
+PRODUCTION_DATE_KV: "\"productionDate\"" SPACE ":" SPACE PRODUCTION_DATE
+start: SPACE  "{" SPACE BATCH_ID_KV "," SPACE PRODUCTION_DATE_KV "," SPACE YIELD_RATE_KV ("," SPACE DEFECTS_KV)? "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+YIELD_RATE_KV: "\"yieldRate\"" SPACE ":" SPACE NUMBER
+FENCE: "```"

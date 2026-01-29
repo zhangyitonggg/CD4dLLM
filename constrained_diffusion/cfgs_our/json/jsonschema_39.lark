@@ -1,0 +1,17 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+CLAIM_DATE: DATE_STRING
+CLAIM_DATE_KV: "\"claimDate\"" SPACE ":" SPACE CLAIM_DATE
+CLAIM_ID_KV: "\"claimID\"" SPACE ":" SPACE STRING
+CLAIM_STATUS_KV: "\"claimStatus\"" SPACE ":" SPACE STRING
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+EQUIPMENT_ID_KV: "\"equipmentID\"" SPACE ":" SPACE STRING
+ISSUE_DESCRIPTION_KV: "\"issueDescription\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE CLAIM_ID_KV "," SPACE EQUIPMENT_ID_KV "," SPACE CLAIM_DATE_KV "," SPACE ISSUE_DESCRIPTION_KV "," SPACE CLAIM_STATUS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

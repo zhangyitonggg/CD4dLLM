@@ -1,0 +1,19 @@
+%llguidance {}
+
+BASE_CURRENCY_KV: "\"baseCurrency\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DECIMAL_PART: /[0-9]/{1,16}
+EXCHANGE_RATE_KV: "\"exchangeRate\"" SPACE ":" SPACE NUMBER
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+start: SPACE  "{" SPACE BASE_CURRENCY_KV "," SPACE TARGET_CURRENCY_KV "," SPACE EXCHANGE_RATE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TARGET_CURRENCY_KV: "\"targetCurrency\"" SPACE ":" SPACE STRING
+FENCE: "```"

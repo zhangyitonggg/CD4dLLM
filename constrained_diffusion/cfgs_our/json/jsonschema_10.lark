@@ -1,0 +1,17 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_: DATE_STRING
+DATE_KV: "\"date\"" SPACE ":" SPACE DATE_
+DATE_STRING: "\"" DATE "\"" SPACE
+PORT_NAME_KV: "\"portName\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE PORT_NAME_KV "," SPACE DATE_KV "," SPACE TIME_SLOTS_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TIME_SLOTS: "[" SPACE (TIME_SLOTS_ITEM ("," SPACE TIME_SLOTS_ITEM)*)? "]" SPACE
+TIME_SLOTS_ITEM: "\"" (/[01]/? /[0-9]/ | "2" /[0-3]/) ":" /[0-5]/ /[0-9]/ "\"" SPACE
+TIME_SLOTS_KV: "\"timeSlots\"" SPACE ":" SPACE TIME_SLOTS
+FENCE: "```"

@@ -1,0 +1,70 @@
+DIGIT: /\d/
+FIFTEEN: /1[0-5]/  # Matches digits 10-15
+ORGANIC_SYMBOL: /(B|Br|Cl|C|[NOPSFI]|[bcnops]|At|Ts)/
+BOND: /(=|#|\/|\$|\\)/
+ANORGANIC_SYMBOL: /A[cglmru]|B[aehik]|C[adefmnorsu]|D[bsy]|E[rsu]|F[elmr]|G[ade]|H[efgos]|I[nr]|K[r]?|L[airuv]|M[cgnot]|N[abdehiop]|O[gs]|P[abdmortu]|R[abefghnu]|S[bcegimnr]|T[abcehilm]|[UVW]|Xe|Y[b]?|Z[nr]|se|as/
+CHIRAL: /@@|@/
+LPAR: /\(/
+RPAR: /\)/
+LBRACK: /\[/
+RBRACK: /\]/
+PERC: /%/
+H: /H/
+PLUS: /\+/
+MINUS: /-/
+COLON: /\:/
+DOT: /\./
+SPACE: /[ \t\n\r]/
+FENCE: "```"
+
+%import common.WS
+%ignore WS
+
+start: SPACE* line FENCE?
+
+line: atom opt_combo_chain_branch_list
+
+opt_combo_chain_branch_list: combo_chain_branch_list?
+
+combo_chain_branch_list: combo_chain_branch_element+
+
+combo_chain_branch_element: chain | branch
+
+chain: ("." atom) | (bond? combo_atom_rnum_list)
+
+combo_atom_rnum_list: combo_atom_rnum_element+
+
+combo_atom_rnum_element: atom | rnum
+
+bond: "-" | BOND
+
+branch: "(" opt_bond_or_dot_line_list ")" 
+
+opt_bond_or_dot_line_list: ( (bond | ".")? line )+
+
+atom: ORGANIC_SYMBOL | bracket_atom
+
+bracket_atom: "[" optional_isotope symbol optional_chiral optional_h_count optional_charge optional_map "]"
+
+
+optional_isotope: isotope?
+
+optional_chiral: CHIRAL?
+
+optional_h_count: h_count?
+
+optional_charge: charge?
+
+optional_map: map?
+
+rnum: DIGIT | PERC DIGIT DIGIT
+
+isotope: DIGIT | DIGIT DIGIT | DIGIT DIGIT DIGIT
+
+h_count: H DIGIT?
+
+charge: "+" | "+ +" | "+" FIFTEEN | "+" DIGIT | "-" | "- -" | "-" FIFTEEN | "-" DIGIT
+
+map: ":" isotope
+
+symbol: ORGANIC_SYMBOL | ANORGANIC_SYMBOL | H

@@ -1,0 +1,17 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COMPONENT_ID_KV: "\"componentID\"" SPACE ":" SPACE STRING
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+ESTIMATED_DELIVERY: DATE_STRING
+ESTIMATED_DELIVERY_KV: "\"estimatedDelivery\"" SPACE ":" SPACE ESTIMATED_DELIVERY
+start: SPACE  "{" SPACE SHIPMENT_ID_KV "," SPACE COMPONENT_ID_KV "," SPACE STATUS_KV "," SPACE ESTIMATED_DELIVERY_KV "}" SPACE FENCE?
+SHIPMENT_ID_KV: "\"shipmentID\"" SPACE ":" SPACE STRING
+SPACE: /[ \t\n\r]/*
+STATUS: ("\"ordered\"" | "\"shipped\"" | "\"in transit\"" | "\"delivered\"" | "\"delayed\"") SPACE
+STATUS_KV: "\"status\"" SPACE ":" SPACE STATUS
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

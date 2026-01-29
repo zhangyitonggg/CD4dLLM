@@ -1,0 +1,18 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+PARTIES_INVOLVED: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+PARTIES_INVOLVED_KV: "\"partiesInvolved\"" SPACE ":" SPACE PARTIES_INVOLVED
+start: SPACE  "{" SPACE TREATY_ID_KV "," SPACE TYPE_KV "," SPACE PARTIES_INVOLVED_KV "," SPACE TREATY_TERMS_KV "," SPACE SIGNATURE_DATE_KV "}" SPACE FENCE?
+SIGNATURE_DATE: DATE_STRING
+SIGNATURE_DATE_KV: "\"signatureDate\"" SPACE ":" SPACE SIGNATURE_DATE
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TREATY_ID_KV: "\"treatyId\"" SPACE ":" SPACE STRING
+TREATY_TERMS_KV: "\"treatyTerms\"" SPACE ":" SPACE STRING
+TYPE_KV: "\"type\"" SPACE ":" SPACE STRING
+FENCE: "```"

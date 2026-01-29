@@ -1,0 +1,19 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COMPATIBLE_MACHINERY: "[" SPACE (STRING ("," SPACE STRING)*)? "]" SPACE
+COMPATIBLE_MACHINERY_KV: "\"compatibleMachinery\"" SPACE ":" SPACE COMPATIBLE_MACHINERY
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+PART_ID_KV: "\"partID\"" SPACE ":" SPACE STRING
+PART_NAME_KV: "\"partName\"" SPACE ":" SPACE STRING
+QUANTITY_AVAILABLE_KV: "\"quantityAvailable\"" SPACE ":" SPACE INTEGER
+start: SPACE  "{" SPACE PART_ID_KV "," SPACE PART_NAME_KV "," SPACE QUANTITY_AVAILABLE_KV "," SPACE COMPATIBLE_MACHINERY_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

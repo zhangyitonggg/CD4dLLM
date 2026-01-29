@@ -1,0 +1,21 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+NEW_STOCK_LEVEL_KV: "\"newStockLevel\"" SPACE ":" SPACE INTEGER
+PRODUCT_NAME_KV: "\"productName\"" SPACE ":" SPACE STRING
+RESTOCK_DATE: DATE_STRING
+RESTOCK_DATE_KV: "\"restockDate\"" SPACE ":" SPACE RESTOCK_DATE
+start: SPACE  "{" SPACE SKU_KV "," SPACE PRODUCT_NAME_KV "," SPACE NEW_STOCK_LEVEL_KV ("," SPACE RESTOCK_DATE_KV)? "}" SPACE FENCE?
+SKU_KV: "\"sku\"" SPACE ":" SPACE STRING
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

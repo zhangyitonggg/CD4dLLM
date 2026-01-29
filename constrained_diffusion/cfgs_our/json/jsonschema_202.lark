@@ -1,0 +1,13 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+COMMENTS_KV: "\"comments\"" SPACE ":" SPACE STRING
+CUSTOMER_ID_KV: "\"customerID\"" SPACE ":" SPACE STRING
+FEEDBACK_SCORE: /[1-5]/ SPACE
+FEEDBACK_SCORE_KV: "\"feedbackScore\"" SPACE ":" SPACE FEEDBACK_SCORE
+start: SPACE  "{" SPACE CUSTOMER_ID_KV "," SPACE FEEDBACK_SCORE_KV ("," SPACE COMMENTS_KV)? "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

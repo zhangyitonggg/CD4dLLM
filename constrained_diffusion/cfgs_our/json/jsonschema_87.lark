@@ -1,0 +1,13 @@
+%llguidance {}
+
+BANDWIDTH_KV: "\"bandwidth\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+start: SPACE  "{" SPACE SSID_KV "," SPACE SECURITY_PROTOCOL_KV "," SPACE BANDWIDTH_KV "}" SPACE FENCE?
+SECURITY_PROTOCOL_KV: "\"securityProtocol\"" SPACE ":" SPACE STRING
+SPACE: /[ \t\n\r]/*
+SSID_KV: "\"ssid\"" SPACE ":" SPACE STRING
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

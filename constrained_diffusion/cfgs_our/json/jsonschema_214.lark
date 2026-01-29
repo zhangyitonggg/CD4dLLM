@@ -1,0 +1,14 @@
+%llguidance {}
+
+ARRIVAL_AIRPORT_KV: "\"arrivalAirport\"" SPACE ":" SPACE STRING
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DEPARTURE_AIRPORT_KV: "\"departureAirport\"" SPACE ":" SPACE STRING
+FLIGHT_DURATION_KV: "\"flightDuration\"" SPACE ":" SPACE STRING
+FLIGHT_NUMBER_KV: "\"flightNumber\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE FLIGHT_NUMBER_KV "," SPACE DEPARTURE_AIRPORT_KV "," SPACE ARRIVAL_AIRPORT_KV "," SPACE FLIGHT_DURATION_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

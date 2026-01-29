@@ -1,0 +1,19 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATA_SOURCE_KV: "\"dataSource\"" SPACE ":" SPACE STRING
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DATE_RANGE: "{" SPACE DATE_RANGE_START_DATE_KV "," SPACE DATE_RANGE_END_DATE_KV "}" SPACE
+DATE_RANGE_END_DATE: DATE_STRING
+DATE_RANGE_END_DATE_KV: "\"endDate\"" SPACE ":" SPACE DATE_RANGE_END_DATE
+DATE_RANGE_KV: "\"dateRange\"" SPACE ":" SPACE DATE_RANGE
+DATE_RANGE_START_DATE: DATE_STRING
+DATE_RANGE_START_DATE_KV: "\"startDate\"" SPACE ":" SPACE DATE_RANGE_START_DATE
+start: SPACE  "{" SPACE SYMBOL_KV "," SPACE DATE_RANGE_KV "," SPACE DATA_SOURCE_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+SYMBOL_KV: "\"symbol\"" SPACE ":" SPACE STRING
+FENCE: "```"

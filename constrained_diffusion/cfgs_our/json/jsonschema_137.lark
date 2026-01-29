@@ -1,0 +1,14 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+LOCATION_KV: "\"location\"" SPACE ":" SPACE STRING
+MINERAL_TYPE_KV: "\"mineralType\"" SPACE ":" SPACE STRING
+OPERATIONAL_STATUS: ("\"Active\"" | "\"Inactive\"" | "\"Under Development\"") SPACE
+OPERATIONAL_STATUS_KV: "\"operationalStatus\"" SPACE ":" SPACE OPERATIONAL_STATUS
+start: SPACE  "{" SPACE SITE_NAME_KV "," SPACE LOCATION_KV "," SPACE MINERAL_TYPE_KV "," SPACE OPERATIONAL_STATUS_KV "}" SPACE FENCE?
+SITE_NAME_KV: "\"siteName\"" SPACE ":" SPACE STRING
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+FENCE: "```"

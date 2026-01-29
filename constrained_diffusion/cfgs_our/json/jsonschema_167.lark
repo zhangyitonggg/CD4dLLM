@@ -1,0 +1,28 @@
+%llguidance {}
+
+CHAR: /[^"\\\x7F\x00-\x1F]/
+     | /[\\]/ (/["\\bfnrt]/ | "u" /[0-9a-fA-F]/{4,4})
+
+DATE: /[0-9]/{4,4} "-" ("0" /[1-9]/ | "1" /[0-2]/) "-" ("0" /[1-9]/ | /[1-2]/ /[0-9]/ | "3" /[0-1]/)
+DATE_STRING: "\"" DATE "\"" SPACE
+DECIMAL_PART: /[0-9]/{1,16}
+INTEGER: "-"? INTEGRAL_PART SPACE
+
+INTEGRAL_PART: /[0]/
+     | /[1-9]/ /[0-9]/{0,15}
+
+ITEMS: "[" SPACE (ITEMS_ITEM ("," SPACE ITEMS_ITEM)*)? "]" SPACE
+ITEMS_ITEM: "{" SPACE ITEMS_ITEM_PRODUCT_ID_KV "," SPACE ITEMS_ITEM_QUANTITY_KV "," SPACE ITEMS_ITEM_UNIT_PRICE_KV "}" SPACE
+ITEMS_ITEM_PRODUCT_ID_KV: "\"productID\"" SPACE ":" SPACE STRING
+ITEMS_ITEM_QUANTITY_KV: "\"quantity\"" SPACE ":" SPACE INTEGER
+ITEMS_ITEM_UNIT_PRICE_KV: "\"unitPrice\"" SPACE ":" SPACE NUMBER
+ITEMS_KV: "\"items\"" SPACE ":" SPACE ITEMS
+NUMBER: "-"? INTEGRAL_PART ("." DECIMAL_PART)? (/[eE]/ /[-+]/? INTEGRAL_PART)? SPACE
+ORDER_DATE: DATE_STRING
+ORDER_DATE_KV: "\"orderDate\"" SPACE ":" SPACE ORDER_DATE
+ORDER_ID_KV: "\"orderID\"" SPACE ":" SPACE STRING
+start: SPACE  "{" SPACE ORDER_ID_KV "," SPACE ORDER_DATE_KV "," SPACE ITEMS_KV "," SPACE TOTAL_AMOUNT_KV "}" SPACE FENCE?
+SPACE: /[ \t\n\r]/*
+STRING: "\"" CHAR* "\"" SPACE
+TOTAL_AMOUNT_KV: "\"totalAmount\"" SPACE ":" SPACE NUMBER
+FENCE: "```"
